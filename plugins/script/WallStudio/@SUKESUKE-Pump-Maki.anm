@@ -1,17 +1,17 @@
-@»İ¼¬²İ‰æ–Ê(Ì§²Ù‚©‚ç)
---track0:[,0,100,0
---track1:[,0,100,0
---track2:[,0,100,0
---track3:[,0,100,0
---dialog:Àİ¸‚ÌxÀ•W,tankX=0;Àİ¸‚ÌyÀ•W,tankY=0;Àİ¸»²½Ş,tankSize=0;HP‚ÌxÀ•W,hpX=0;HP‚ÌyÀ•W,hpY=0;HP»²½Ş,hpSize=0;
---check0:ˆÊ’uŠm”F,1
+@ï½»ï¾ï½¼ï½¬ï½²ï¾ç”»é¢(ï¾Œï½§ï½²ï¾™ã‹ã‚‰)
+--track0:ãƒ¼,0,100,0
+--track1:ãƒ¼,0,100,0
+--track2:ãƒ¼,0,100,0
+--track3:ãƒ¼,0,100,0
+--dialog:ï¾€ï¾ï½¸ã®xåº§æ¨™,tankX=0;ï¾€ï¾ï½¸ã®yåº§æ¨™,tankY=0;ï¾€ï¾ï½¸ï½»ï½²ï½½ï¾,tankSize=0;HPã®xåº§æ¨™,hpX=0;HPã®yåº§æ¨™,hpY=0;HPï½»ï½²ï½½ï¾,hpSize=0;
+--check0:ä½ç½®ç¢ºèª,1
 
 
 
 
 do
 
-	--İ’è
+	--è¨­å®š
 	local hpActiveBorder = 0xF6A911 ;
 	local hpDisableBorder = 0x4B4A50;
 	local hpActiveLatitude = 0x40;
@@ -29,7 +29,7 @@ do
 
 
 
-	--—§‚¿ŠG‚Æ‚Ì’ÊM•Ï”(Global)
+	--ç«‹ã¡çµµã¨ã®é€šä¿¡å¤‰æ•°(Global)
 	if ws_tank == nil then
 		ws_tank = 1;
 	end
@@ -67,7 +67,7 @@ do
 
 
 
-	--ƒ[ƒh
+	--ãƒ­ãƒ¼ãƒ‰
 	if ws_loaded == nil then
 		ws_loaded = false;
 	end
@@ -93,7 +93,7 @@ do
 		debug_print("Load: " .. table.concat( ws_setting, ","));
 		ws_loaded = true;
 	end
-	--[[ƒZ[ƒu
+	--[[ã‚»ãƒ¼ãƒ–
 	if ws_loaded and ws_timer_counter ~= math.floor(os.clock()/5) then
 		ws_timer_counter = math.floor(os.clock()/5);
 		ws_setting[1] = ws_tankX;
@@ -359,24 +359,24 @@ do
 		return Average[index];
 	end
 
-	--Àİ¸‚ÌƒTƒ“ƒvƒŠƒ“ƒOPixel‚ÌÀ•W—ñ‚ğæ“¾
+	--ï¾€ï¾ï½¸ã®ã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°Pixelã®åº§æ¨™åˆ—ã‚’å–å¾—
 	local sampleTankPixels = {};
 	for i = 1, tankSeg do
 		sampleTankPixels[i] = {ws_tankX, ws_tankY + ws_tankSize / (tankSeg - 1) * i};
 	end
 
-	--HP‚ÌƒTƒ“ƒvƒŠƒ“ƒOPixel‚ÌÀ•W—ñ‚ğæ“¾
+	--HPã®ã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°Pixelã®åº§æ¨™åˆ—ã‚’å–å¾—
 	local sampleHpPixels = {}
 	for i = 1, hpSeg do
 		local angle = i * 2 * math.pi * 0.90 / (hpSeg + 1) + math.pi * 1.11;
 		sampleHpPixels[i] = {ws_hpX + ws_hpSize * math.sin(angle), ws_hpY + 0.95 * ws_hpSize * math.cos(angle)};
 	end
 
-	--ƒTƒ“ƒvƒŠƒ“ƒO
+	--ã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°
 	local sampleTankPixelColors = Sample(sampleTankPixels);
 	local sampleHpPixelColors = Sample(sampleHpPixels);
 
-	--’Šo
+	--æŠ½å‡º
 	local tank = ArrayChack(sampleTankPixelColors, CheckPumpWrap);
 	if tank >= 0 then
 		ws_tank_buffer = sampleTankPixelColors;
@@ -391,7 +391,7 @@ do
 	--debug
 	if obj.check0 then
 
-	    --“Œvî•ñ
+	    --çµ±è¨ˆæƒ…å ±
 		local rt1, gt1, bt1 = GetRgbFromCol(sampleHpPixelColors[1]);
 		local rtn, gtn, btn = GetRgbFromCol(sampleHpPixelColors[#sampleHpPixelColors]);
 		local trt1, tgt1, tbt1 = GetRgbFromCol(sampleTankPixelColors[1]);
@@ -420,7 +420,7 @@ do
 		" .. "Pump_vn:" .. tankVec2[1] .. " - ".. tankVec2[2] .. "\
 		"  
 
-		--ƒ[ƒ^[
+		--ãƒ¡ãƒ¼ã‚¿ãƒ¼
 		ArrayPoint22(sampleHpPixelColors, 10, 3);
 		ArrayPoint22(sampleTankPixelColors, 50, 3);
 		ArrayPoint22(ArrayChackNormalize(sampleHpPixelColors, CheckHpWrap), 10, 11);
@@ -428,31 +428,31 @@ do
 		ArrayPoint22(ArrayChackNormalize(ws_hp_buffer, CheckHpWrap), 10, 19);
 		ArrayPoint22(ArrayChackNormalize(ws_tank_buffer, CheckPumpWrap), 50, 19);
 
-		--ˆÊ’u‡‚í‚¹—p
+		--ä½ç½®åˆã‚ã›ç”¨
 		ArrayPoint(sampleTankPixels, 0x0000ff);
 		ArrayPoint(sampleHpPixels, 0xff5500);
 		
-		--’Ê‰ßŠm”F
+		--é€šéç¢ºèª
 		debug_print("Fin.");
 	end
 	
 end
 
 
-@»İ¼¬²İ‰æ–Ê(İ’è‚©‚ç)
---track0:[,0,100,0
---track1:[,0,100,0
---track2:[,0,100,0
---track3:[,0,100,0
---dialog:Àİ¸‚ÌxÀ•W,tankX=760;Àİ¸‚ÌyÀ•W,tankY=433;Àİ¸»²½Ş,tankSize=45;HP‚ÌxÀ•W,hpX=779;HP‚ÌyÀ•W,hpY=83;HP»²½Ş,hpSize=50;
---check0:ˆÊ’uŠm”F,1
+@ï½»ï¾ï½¼ï½¬ï½²ï¾ç”»é¢(è¨­å®šã‹ã‚‰)
+--track0:ãƒ¼,0,100,0
+--track1:ãƒ¼,0,100,0
+--track2:ãƒ¼,0,100,0
+--track3:ãƒ¼,0,100,0
+--dialog:ï¾€ï¾ï½¸ã®xåº§æ¨™,tankX=760;ï¾€ï¾ï½¸ã®yåº§æ¨™,tankY=433;ï¾€ï¾ï½¸ï½»ï½²ï½½ï¾,tankSize=45;HPã®xåº§æ¨™,hpX=779;HPã®yåº§æ¨™,hpY=83;HPï½»ï½²ï½½ï¾,hpSize=50;
+--check0:ä½ç½®ç¢ºèª,1
 
 
 
 
 do
 
-	--İ’è
+	--è¨­å®š
 	local hpActiveBorder = 0xF6A911 ;
 	local hpDisableBorder = 0x4B4A50;
 	local hpActiveLatitude = 0x40;
@@ -470,7 +470,7 @@ do
 
 
 
-	--—§‚¿ŠG‚Æ‚Ì’ÊM•Ï”(Global)
+	--ç«‹ã¡çµµã¨ã®é€šä¿¡å¤‰æ•°(Global)
 	if ws_tank == nil then
 		ws_tank = 1;
 	end
@@ -508,7 +508,7 @@ do
 
 
 
-	--[[ƒ[ƒh
+	--[[ãƒ­ãƒ¼ãƒ‰
 	if ws_loaded == nil then
 		ws_loaded = false;
 	end
@@ -534,7 +534,7 @@ do
 		debug_print("Load: " .. table.concat( ws_setting, ","));
 		ws_loaded = true;
 	end
-	--ƒZ[ƒu
+	--ã‚»ãƒ¼ãƒ–
 	if ws_loaded and ws_timer_counter ~= math.floor(os.clock()/5) then
 		ws_timer_counter = math.floor(os.clock()/5);
 		ws_setting[1] = ws_tankX;
@@ -800,24 +800,24 @@ do
 		return Average[index];
 	end
 
-	--Àİ¸‚ÌƒTƒ“ƒvƒŠƒ“ƒOPixel‚ÌÀ•W—ñ‚ğæ“¾
+	--ï¾€ï¾ï½¸ã®ã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°Pixelã®åº§æ¨™åˆ—ã‚’å–å¾—
 	local sampleTankPixels = {};
 	for i = 1, tankSeg do
 		sampleTankPixels[i] = {ws_tankX, ws_tankY + ws_tankSize / (tankSeg - 1) * i};
 	end
 
-	--HP‚ÌƒTƒ“ƒvƒŠƒ“ƒOPixel‚ÌÀ•W—ñ‚ğæ“¾
+	--HPã®ã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°Pixelã®åº§æ¨™åˆ—ã‚’å–å¾—
 	local sampleHpPixels = {}
 	for i = 1, hpSeg do
 		local angle = i * 2 * math.pi * 0.90 / (hpSeg + 1) + math.pi * 1.11;
 		sampleHpPixels[i] = {ws_hpX + ws_hpSize * math.sin(angle), ws_hpY + 0.95 * ws_hpSize * math.cos(angle)};
 	end
 
-	--ƒTƒ“ƒvƒŠƒ“ƒO
+	--ã‚µãƒ³ãƒ—ãƒªãƒ³ã‚°
 	local sampleTankPixelColors = Sample(sampleTankPixels);
 	local sampleHpPixelColors = Sample(sampleHpPixels);
 
-	--’Šo
+	--æŠ½å‡º
 	local tank = ArrayChack(sampleTankPixelColors, CheckPumpWrap);
 	if tank >= 0 then
 		ws_tank_buffer = sampleTankPixelColors;
@@ -832,7 +832,7 @@ do
 	--debug
 	if obj.check0 then
 
-	    --“Œvî•ñ
+	    --çµ±è¨ˆæƒ…å ±
 		local rt1, gt1, bt1 = GetRgbFromCol(sampleHpPixelColors[1]);
 		local rtn, gtn, btn = GetRgbFromCol(sampleHpPixelColors[#sampleHpPixelColors]);
 		local trt1, tgt1, tbt1 = GetRgbFromCol(sampleTankPixelColors[1]);
@@ -861,7 +861,7 @@ do
 		" .. "Pump_vn:" .. tankVec2[1] .. " - ".. tankVec2[2] .. "\
 		"  
 
-		--ƒ[ƒ^[
+		--ãƒ¡ãƒ¼ã‚¿ãƒ¼
 		ArrayPoint22(sampleHpPixelColors, 10, 3);
 		ArrayPoint22(sampleTankPixelColors, 50, 3);
 		ArrayPoint22(ArrayChackNormalize(sampleHpPixelColors, CheckHpWrap), 10, 11);
@@ -869,34 +869,34 @@ do
 		ArrayPoint22(ArrayChackNormalize(ws_hp_buffer, CheckHpWrap), 10, 19);
 		ArrayPoint22(ArrayChackNormalize(ws_tank_buffer, CheckPumpWrap), 50, 19);
 
-		--ˆÊ’u‡‚í‚¹—p
+		--ä½ç½®åˆã‚ã›ç”¨
 		ArrayPoint(sampleTankPixels, 0x0000ff);
 		ArrayPoint(sampleHpPixels, 0xff5500);
 		
-		--’Ê‰ßŠm”F
+		--é€šéç¢ºèª
 		debug_print("Fin.");
 	end
 	
 end
 
 
-@Àİ¸
---track0:•Ï”,0,100,0
---track1:•Ï”,0,100,0
---track2:•Ï”,0,100,0
---track3:•Ï”,0,100,0
---check0:—LŒø,1
+@ï¾€ï¾ï½¸
+--track0:å¤‰æ•°,0,100,0
+--track1:å¤‰æ•°,0,100,0
+--track2:å¤‰æ•°,0,100,0
+--track3:å¤‰æ•°,0,100,0
+--check0:æœ‰åŠ¹,1
 
 if obj.check0 then
 	obj.alpha = ws_tank;
 end
 
 @HP
---track0:”j‚ê‚Ì‘å‚«‚³,0,1500,500
---track1:µÌ¾¯ÄX,-1000,1000,0
---track2:µÌ¾¯ÄY,-1000,1000,0
---track3:ƒ^ƒCƒv,0,6.01,5
---check0:—LŒø,1
+--track0:ç ´ã‚Œã®å¤§ãã•,0,1500,500
+--track1:ï½µï¾Œï½¾ï½¯ï¾„X,-1000,1000,0
+--track2:ï½µï¾Œï½¾ï½¯ï¾„Y,-1000,1000,0
+--track3:ã‚¿ã‚¤ãƒ—,0,6.01,5
+--check0:æœ‰åŠ¹,1
 
 do
 	if obj.check0 then
@@ -957,7 +957,7 @@ do
 			ph = yl/h/2.3
 			for y=0,h-1 do
 				for x=0,w-1 do
-					-- Še’¸“_‚ğŒvZ
+					-- å„é ‚ç‚¹ã‚’è¨ˆç®—
 					pu[0] = xl*x/w
 					pu[1] = xl*(x+1)/w
 					pu[2] = pu[1]
@@ -988,7 +988,7 @@ do
 						pv[2] = yl
 						pv[3] = yl
 					end
-					-- Šî€‚ÌŒvZ
+					-- åŸºæº–ã®è¨ˆç®—
 					gx = (pu[0]+pu[1]+pu[2]+pu[3])/4
 					gy = (pv[0]+pv[1]+pv[2]+pv[3])/4
 					gz = 0
@@ -999,7 +999,7 @@ do
 					vy = cy-ay
 					vz = -az
 					v = math.sqrt(vx*vx+vy*vy+vz*vz)
-					-- ŠÔ‚ÌŒvZ
+					-- æ™‚é–“ã®è¨ˆç®—
 					t = tm-v/l*delay
 					if( t < 0 ) then
 						t = 0
@@ -1007,7 +1007,7 @@ do
 					else
 						obj.setoption('antialias',1)
 					end
-					-- ‰ñ“]‚ğŒvZ
+					-- å›è»¢ã‚’è¨ˆç®—
 					xx = t*obj.rand(-spin,spin,x,y+2000)/100
 					yy = t*obj.rand(-spin,spin,x,y+3000)/100
 					zz = t*obj.rand(-spin,spin,x,y+4000)/100
@@ -1030,7 +1030,7 @@ do
 						py[i] = m10*xx + m11*yy
 						pz[i] = m20*xx + m21*yy
 					end
-					-- •\¦À•W‚ğŒvZ
+					-- è¡¨ç¤ºåº§æ¨™ã‚’è¨ˆç®—
 					v = 1/(1+v*v/(l*l)*impact)
 					vx = vx*v + obj.rand(-size,size,x,y+4000)*diff
 					vy = vy*v + obj.rand(-size,size,x,y+5000)*diff
@@ -1056,17 +1056,18 @@ do
 		end
 		
 		for i=1, breakPoint do
-			--¯Œ^ƒ}ƒXƒN
-			obj.effect("ƒ}ƒXƒN",
+			--æ˜Ÿå‹ãƒã‚¹ã‚¯
+			obj.effect("ãƒã‚¹ã‚¯",
 				"X",ws_break[i][1]+obj.track1,
 				"Y",ws_break[i][2]+obj.track2,
-				"ƒTƒCƒY",obj.track0,
-				"ƒ}ƒXƒN‚Ì”½“]",1,
+				"ã‚µã‚¤ã‚º",obj.track0,
+				"ãƒã‚¹ã‚¯ã®åè»¢",1,
 				"type",math.floor(obj.track3)
 			);
 		end
 
-		if ws_break_start == nil and breakPoint > ws_breakPoint_pre then
+		--if ws_break_start == nil and breakPoint > ws_breakPoint_pre then
+		if breakPoint > ws_breakPoint_pre then
 			local w, h = obj.getpixel();
 			obj.drawpoly(-obj.w/2,-obj.h/2,0, obj.w/2,-obj.h/2,0, obj.w/2,obj.h/2,0, -obj.w/2,obj.h/2,0);
 			ws_break_start = obj.time;
@@ -1086,6 +1087,6 @@ end
 
 
 @Dev
---dialog:ƒRƒsƒy,v="Debug: <?=D?>";
+--dialog:ã‚³ãƒ”ãƒš,v="Debug: <?=D?>";
 obj.text = D_a;
 
