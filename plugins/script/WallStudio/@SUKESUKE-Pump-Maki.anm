@@ -6,9 +6,6 @@
 --dialog:ﾀﾝｸのx座標,tankX=760;ﾀﾝｸのy座標,tankY=433;ﾀﾝｸｻｲｽﾞ,tankSize=45;HPのx座標,hpX=779;HPのy座標,hpY=83;HPｻｲｽﾞ,hpSize=50;
 --check0:位置確認,1
 
-
-
-
 do
 
 	--設定
@@ -63,56 +60,6 @@ do
 		ws_hpSize = hpSize;
 		--debug_print("Copyed param");
 	end
-
-
-
-
-	--[[ロード
-	if ws_loaded == nil then
-		ws_loaded = false;
-	end
-	if not ws_loaded then
-		local fhs, estr, ecode, buf;
-		while fhs == nil do
-			fhs, estr, ecode = io.open("plugins/script/WallStudio/a", "r");
-		end
-		for i = 1, 1024 do
-			buf = fhs:read();
-			if buf==nil then
-				break;
-			end
-			ws_setting[i] = buf;
-		end
-		fhs:close();
-		ws_tankX = tonumber(ws_setting[1]);
-		ws_tankY = tonumber(ws_setting[2]);
-		ws_tankSize = tonumber(ws_setting[3]);
-		ws_hpX = tonumber(ws_setting[4]);
-		ws_hpY = tonumber(ws_setting[5]);
-		ws_hpSize = tonumber(ws_setting[6]);
-		debug_print("Load: " .. table.concat( ws_setting, ","));
-		ws_loaded = true;
-	end
-	--セーブ
-	if ws_loaded and ws_timer_counter ~= math.floor(os.clock()/5) then
-		ws_timer_counter = math.floor(os.clock()/5);
-		ws_setting[1] = ws_tankX;
-		ws_setting[2] = ws_tankY;
-		ws_setting[3] = ws_tankSize;
-		ws_setting[4] = ws_hpX;
-		ws_setting[5] = ws_hpY;
-		ws_setting[6] = ws_hpSize;
-		local fhs, estr, ecode;
-		while fhs == nil do
-			fhs, estr, ecode = io.open("plugins/script/WallStudio/a", "w");
-		end
-		fhs:write(table.concat( ws_setting, "\n"));
-		fhs:close();
-		debug_print("Save: " .. table.concat( ws_setting, ","));
-	end]]
-	
-
-
 
 
 	function Vector3Sub(v1, v2)
