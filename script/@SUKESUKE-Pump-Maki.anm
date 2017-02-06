@@ -7,35 +7,37 @@
 --check0:位置確認,1
 --
 --=====================================
-DEBUG = true;
-EDIT = obj.check0;
-require("lib_Parse");
-require("lib_Editor");
-require("lib_Util");
-require("lib_Color");
-require("lib_Debug");
-require("lib_Sunshine");
-obj.pixeloption("blend",0);
---アンカーで座標指定
-local POINT_SIZE = 4;
-local OFFSET = 4;
-local w, h = obj.getpixel();
-obj.setanchor("apos", 2, "line");
-Util.AnchorShift(apos, pos, w/2, h/2);
-Editor.Point(pos[1][1]-OFFSET, pos[1][2], POINT_SIZE, Color.WHITE, 1);
-Editor.Point(pos[2][1]-OFFSET, pos[2][2], POINT_SIZE, Color.RED, 1);
---サンプリングするピクセル
-local start = pos[1];
-local stop = pos[2];
-local samplePx = Parse.BetweenPixcel(start, stop);
---解析
-local rate = Parse.ParseColor(samplePx, Sunshine.TankParse);
-Debug.Log(Util.Round(rate * 100) .. "%");
---通信変数
-if WALLSTUDIO_COMMUNICATION_VALUE == nil then
-    WALLSTUDIO_COMMUNICATION_VALUE = {};
+do
+    DEBUG = true;
+    EDIT = obj.check0;
+    require("lib_Parse");
+    require("lib_Editor");
+    require("lib_Util");
+    require("lib_Color");
+    require("lib_Debug");
+    require("lib_Sunshine");
+    obj.pixeloption("blend",0);
+    --アンカーで座標指定
+    local POINT_SIZE = 4;
+    local OFFSET = 4;
+    local w, h = obj.getpixel();
+    obj.setanchor("apos", 2, "line");
+    Util.AnchorShift(apos, pos, w/2, h/2);
+    Editor.Point(pos[1][1]-OFFSET, pos[1][2], POINT_SIZE, Color.WHITE, 1);
+    Editor.Point(pos[2][1]-OFFSET, pos[2][2], POINT_SIZE, Color.RED, 1);
+    --サンプリングするピクセル
+    local start = pos[1];
+    local stop = pos[2];
+    local samplePx = Parse.BetweenPixcel(start, stop);
+    --解析
+    local rate = Parse.ParseColor(samplePx, Sunshine.TankParse);
+    Debug.Log(Util.Round(rate * 100) .. "%");
+    --通信変数
+    if WALLSTUDIO_COMMUNICATION_VALUE == nil then
+        WALLSTUDIO_COMMUNICATION_VALUE = {};
+    end
+    WALLSTUDIO_COMMUNICATION_VALUE[name] = rate;
 end
-WALLSTUDIO_COMMUNICATION_VALUE[name] = rate;
 --=====================================
 @円形
 --track0:頂点数,0,8,8
@@ -46,36 +48,38 @@ WALLSTUDIO_COMMUNICATION_VALUE[name] = rate;
 --check0:位置確認,1
 --
 --=====================================
-DEBUG = true;
-EDIT = obj.check0;
-require("lib_Parse");
-require("lib_Editor");
-require("lib_Util");
-require("lib_Color");
-require("lib_Debug");
-require("lib_Sunshine");
-obj.pixeloption("blend",0);
---アンカーで座標指定
-local POINT_SIZE = 4;
-local OFFSET = 4;
-local ANCHOR_COUNT = 8--tonumber(obj.track0);
-local w, h = obj.getpixel();
-obj.setanchor("apos", ANCHOR_COUNT, "line");
-Util.AnchorShift(apos, pos, w/2, h/2);
-for i=1,ANCHOR_COUNT-1 do
-    Editor.Point(pos[i][1]-OFFSET, pos[i][2], POINT_SIZE, Color.WHITE, 1);
+do
+    DEBUG = true;
+    EDIT = obj.check0;
+    require("lib_Parse");
+    require("lib_Editor");
+    require("lib_Util");
+    require("lib_Color");
+    require("lib_Debug");
+    require("lib_Sunshine");
+    obj.pixeloption("blend",0);
+    --アンカーで座標指定
+    local POINT_SIZE = 4;
+    local OFFSET = 4;
+    local ANCHOR_COUNT = 8--tonumber(obj.track0);
+    local w, h = obj.getpixel();
+    obj.setanchor("apos", ANCHOR_COUNT, "line");
+    Util.AnchorShift(apos, pos, w/2, h/2);
+    for i=1,ANCHOR_COUNT-1 do
+        Editor.Point(pos[i][1]-OFFSET, pos[i][2], POINT_SIZE, Color.WHITE, 1);
+    end
+    Editor.Point(pos[ANCHOR_COUNT][1]-OFFSET, pos[ANCHOR_COUNT][2], POINT_SIZE, Color.RED, 1);
+    --サンプリングするピクセル
+    local samplePx = pos;
+    --解析
+    local rate = Util.Round(Parse.ParseColor(samplePx, Sunshine.HpParse));
+    Debug.Log((rate * ANCHOR_COUNT) .. "個");
+    --通信変数
+    if WALLSTUDIO_COMMUNICATION_VALUE == nil then
+        WALLSTUDIO_COMMUNICATION_VALUE = {};
+    end
+    WALLSTUDIO_COMMUNICATION_VALUE[name] = rate;
 end
-Editor.Point(pos[ANCHOR_COUNT][1]-OFFSET, pos[ANCHOR_COUNT][2], POINT_SIZE, Color.RED, 1);
---サンプリングするピクセル
-local samplePx = pos;
---解析
-local rate = Util.Round(Parse.ParseColor(samplePx, Sunshine.HpParse));
-Debug.Log((rate * ANCHOR_COUNT) .. "個");
---通信変数
-if WALLSTUDIO_COMMUNICATION_VALUE == nil then
-    WALLSTUDIO_COMMUNICATION_VALUE = {};
-end
-WALLSTUDIO_COMMUNICATION_VALUE[name] = rate;
 --=====================================
 @タンク
 --track0:ー,0,1,0
@@ -86,12 +90,14 @@ WALLSTUDIO_COMMUNICATION_VALUE[name] = rate;
 --check0:有効,1
 --
 --=====================================
-require("lib_Parse");
-require("lib_Editor");
-require("lib_Util");
-require("lib_Color");
-require("lib_Debug");
-require("lib_Sunshine");
-if string.match(dst, "alpha") then
-    obj.alpha = Util.CARVE_FUNC[carve](WALLSTUDIO_COMMUNICATION_VALUE[name]);
+do
+    require("lib_Parse");
+    require("lib_Editor");
+    require("lib_Util");
+    require("lib_Color");
+    require("lib_Debug");
+    require("lib_Sunshine");
+    if string.match(dst, "alpha") then
+        obj.alpha = Util.CARVE_FUNC[carve](WALLSTUDIO_COMMUNICATION_VALUE[name]);
+    end
 end
