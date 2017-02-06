@@ -130,17 +130,7 @@ do
             --Util.Break(time);
         end       
     end
-    Debug.Log(#WCV[uniName]["random"]);
-    for i=1, MAX_HP - WCV[name] do
-        --星型マスク
-        obj.effect("マスク",
-            "X",WCV[uniName]["random"][1][i]+obj.track1,
-            "Y",WCV[uniName]["random"][2][i]+obj.track2,
-            "サイズ",obj.track0 * i/MAX_HP,
-            "マスクの反転",1,
-            "type",5
-        );
-    end
+    Util.BreakMask(MAX_HP - WCV[name], WCV[uniName]["random"], obj.track1, obj.track2, obj.track0, MAX_HP);
     WCV[uniName]["buffer"] = WCV[name];
     WCV[uniName]["diffusion"] = obj.track3;
 end

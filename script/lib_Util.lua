@@ -57,3 +57,15 @@ function MakeRandomDoubleTable(count, start, stop, seed)
     rtn[2] = MakeRandomTable(count, start, stop);
     return rtn;
 end
+function BreakMask(count, pointSrc, offsetX, offsetY, size, max)
+    for i=1, count do
+        --マスク
+        obj.effect("マスク",
+            "X",pointSrc[1][i]+offsetX,
+            "Y",pointSrc[2][i]+offsetY,
+            "サイズ",size * i/max,
+            "マスクの反転",1,
+            "type",5
+        );
+    end
+end
