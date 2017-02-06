@@ -129,12 +129,14 @@ do
         WCV[uniName] = {};
         WCV[uniName]["diffusion"] = obj.track3;
         WCV[uniName]["random"] = Util.MakeRandomDoubleTable(RANDOM_COUNT, Util.Round(w*obj.track3/100), Util.Round(w*(1-obj.track3/100)), seed);
+        WCV[uniName]["breakTime"] = -60;
     else
         if WCV[uniName]["diffusion"] ~= obj.track3 then
             WCV[uniName]["random"] = Util.MakeRandomDoubleTable(RANDOM_COUNT, Util.Round(w*obj.track3/100), Util.Round(w*(1-obj.track3/100)), seed);
         end
-        if WCV[uniName]["buffer"] ~= WCV[name] then
-            --Util.Break(time);
+        if WCV[uniName]["buffer"] > WCV[name] then
+            Debug.Log("‘å”j");
+            WCV[uniName]["breakTime"] = obj.time;
         end       
     end
     if obj.check0 then
@@ -142,6 +144,9 @@ do
     else
         Util.BreakMask(MAX_HP - WCV[name], Util.MatrixTranspos(pos), obj.track1, obj.track2, obj.track0, MAX_HP);
     end
+    obj.drawpoly(-obj.w/2,-obj.h/2,0, obj.w/2,-obj.h/2,0, obj.w/2,obj.h/2,0, -obj.w/2,obj.h/2,0);
+    Util.BreakDown(WCV[uniName]["breakTime"], obj);
     WCV[uniName]["buffer"] = WCV[name];
     WCV[uniName]["diffusion"] = obj.track3;
 end
+
