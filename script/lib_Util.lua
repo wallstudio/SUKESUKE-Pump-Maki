@@ -1,5 +1,4 @@
 module("Util",package.seeall);
-CARVE_FUNC = {};
 function Map(iterator, func)
     for i=1,#iterator do
         func(iterator[i], i, iterator);
@@ -42,7 +41,3 @@ end
 function Pow(x)
     return math.pow(2, x)-1;
 end
-CARVE_FUNC["logistic"] = Logistic;
-CARVE_FUNC["log"] = Log;
-CARVE_FUNC["pow"] = Pow;
-CARVE_FUNC["linear"] = Linear;
