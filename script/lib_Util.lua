@@ -59,7 +59,6 @@ function MakeRandomDoubleTable(count, start, stop, seed)
 end
 function BreakMask(count, pointSrc, offsetX, offsetY, size, max)
     for i=1, count do
-        --マスク
         obj.effect("マスク",
             "X",pointSrc[1][i]+offsetX,
             "Y",pointSrc[2][i]+offsetY,
