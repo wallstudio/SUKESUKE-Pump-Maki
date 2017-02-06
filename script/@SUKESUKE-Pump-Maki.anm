@@ -18,11 +18,12 @@ require("lib_Sunshine");
 obj.pixeloption("blend",0);
 --アンカーで座標指定
 local POINT_SIZE = 4;
+local OFFSET = 4;
 local w, h = obj.getpixel();
 obj.setanchor("apos", 2, "line");
 Util.AnchorShift(apos, pos, w/2, h/2);
-Editor.Point(pos[1][1], pos[1][2], POINT_SIZE, Color.WHITE, 1);
-Editor.Point(pos[2][1], pos[2][2], POINT_SIZE, Color.RED, 1);
+Editor.Point(pos[1][1]-OFFSET, pos[1][2], POINT_SIZE, Color.WHITE, 1);
+Editor.Point(pos[2][1]-OFFSET, pos[2][2], POINT_SIZE, Color.RED, 1);
 --サンプリングするピクセル
 local start = pos[1];
 local stop = pos[2];
@@ -30,3 +31,38 @@ local samplePx = Parse.BetweenPixcel(start, stop);
 --解析
 local rate = Parse.ParseColor(samplePx, Sunshine.TankParse);
 Debug.Log(Util.Round(rate * 100) .. "%");
+
+@円形
+--track0:頂点数,0,8,8
+--track1:ー,0,2,0
+--track2:ー,0,2,0
+--track3:ー,0,1,0
+--dialog:名前,name="m0";座標,pos={};　,apos={};
+--check0:位置確認,1
+--
+--=====================================
+DEBUG = true;
+EDIT = obj.check0;
+require("lib_Parse");
+require("lib_Editor");
+require("lib_Util");
+require("lib_Color");
+require("lib_Debug");
+require("lib_Sunshine");
+obj.pixeloption("blend",0);
+--アンカーで座標指定
+local POINT_SIZE = 4;
+local OFFSET = 4;
+local ANCHOR_COUNT = 8--tonumber(obj.track0);
+local w, h = obj.getpixel();
+obj.setanchor("apos", ANCHOR_COUNT, "line");
+Util.AnchorShift(apos, pos, w/2, h/2);
+for i=1,ANCHOR_COUNT-1 do
+    Editor.Point(pos[i][1]-OFFSET, pos[i][2], POINT_SIZE, Color.WHITE, 1);
+end
+Editor.Point(pos[ANCHOR_COUNT][1]-OFFSET, pos[ANCHOR_COUNT][2], POINT_SIZE, Color.RED, 1);
+--サンプリングするピクセル
+local samplePx = pos;
+--解析
+local rate = Parse.ParseColor(samplePx, Sunshine.HpParse);
+Debug.Log(Util.Round(rate * ANCHOR_COUNT) .. "個");

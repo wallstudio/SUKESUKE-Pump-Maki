@@ -39,9 +39,9 @@ function BetweenPixcel(start, stop)
     Debug.Log("#sample: " .. #rtn);
     for i=1,#rtn do
         if 50 > math.abs(rtn[i][longEdge] - start[longEdge]) then
-            --Debug.Point(rtn[i][1]-3, rtn[i][2], 1, Color.SKYBLUE, 1);
+            Debug.Point(rtn[i][1]-3, rtn[i][2], 1, Color.SKYBLUE, 1);
         else
-            --Debug.Point(rtn[i][1]+3, rtn[i][2], 1, Color.BLUE, 1);
+            Debug.Point(rtn[i][1]+3, rtn[i][2], 1, Color.BLUE, 1);
         end
     end
     Debug.Point(rtn[1][1], rtn[1][2], 24, Color.BLACK, 0.3);
@@ -65,18 +65,20 @@ function ParseColor(samplePx, ruleFunc)
     return counter/#rateArry;
 end
 function DebugShow(x, y, ruleFunc)
-    local OFFSET = 100;
+    local OFFSET = 150;
     local RANGE = 40;
     if EDIT then
+        for j=y-5,y+5 do
         for i=1,RANGE do
             obj.pixeloption("type","rgb");
-            local r, g, b = obj.getpixel(x + i - RANGE/2, y, "rgb");
+            local r, g, b = obj.getpixel(x + i - RANGE/2, j, "rgb");
             obj.pixeloption("type","col");
             if(ruleFunc(r, g, b)) then
-                Editor.Point(x + i - RANGE/2 - OFFSET, y, 1, Color.WHITE, 1);
+                Editor.Point(x + i - RANGE/2 - OFFSET, j, 1, Color.WHITE, 1);
             else
-                Editor.Point(x + i - RANGE/2 - OFFSET, y, 1, Color.BLACK, 1);
+                Editor.Point(x + i - RANGE/2 - OFFSET, j, 1, Color.BLACK, 1);
             end
+        end
         end
     end
 end
