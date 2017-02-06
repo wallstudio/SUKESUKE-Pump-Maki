@@ -104,7 +104,8 @@ end
 --track1:ｵﾌｾｯﾄX,-1000,1000,0
 --track2:ｵﾌｾｯﾄY,-1000,1000,0
 --track3:ばらけ,0,100,50
---dialog:名前,name="m1";固有名,uniName="b0";シード,seed=114514;
+--dialog:名前,name="m1";固有名,uniName="b0";シード,seed=114514;座標,pos={};　,apos={};
+--check0:ランダム,0
 --
 --=====================================
 do
@@ -118,6 +119,12 @@ do
     local RANDOM_COUNT = 16;
     local WCV = WALLSTUDIO_COMMUNICATION_VALUE;
     local w, h = obj.getpixel();
+    --手動用のアンカー
+    if not obj.check0 then
+        obj.setanchor("apos", MAX_HP, "line");
+        Util.AnchorShift(apos, pos, w/2, h/2);
+    end
+    --バッファー関係の初期化切り分け
     if WCV[uniName] == nil then
         WCV[uniName] = {};
         WCV[uniName]["diffusion"] = obj.track3;
@@ -130,7 +137,11 @@ do
             --Util.Break(time);
         end       
     end
-    Util.BreakMask(MAX_HP - WCV[name], WCV[uniName]["random"], obj.track1, obj.track2, obj.track0, MAX_HP);
+    if obj.check0 then
+        Util.BreakMask(MAX_HP - WCV[name], WCV[uniName]["random"], obj.track1, obj.track2, obj.track0, MAX_HP);
+    else
+        Util.BreakMask(MAX_HP - WCV[name], Util.MatrixTranspos(pos), obj.track1, obj.track2, obj.track0, MAX_HP);
+    end
     WCV[uniName]["buffer"] = WCV[name];
     WCV[uniName]["diffusion"] = obj.track3;
 end

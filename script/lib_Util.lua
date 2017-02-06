@@ -69,3 +69,14 @@ function BreakMask(count, pointSrc, offsetX, offsetY, size, max)
         );
     end
 end
+function MatrixTranspos(matrix)
+    local newMatrix = {};
+    for i=1,#(matrix[1]) do
+        local newVector = {};
+        for j=1,#matrix do
+            newVector[j] = matrix[j][i];
+        end
+        table.insert(newMatrix, newVector);
+    end
+    return newMatrix;
+end
