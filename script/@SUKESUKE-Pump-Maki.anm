@@ -98,3 +98,49 @@ do
     require("lib_Sunshine");
     obj[dst] = Util[carve](WALLSTUDIO_COMMUNICATION_VALUE[name]);
 end
+--=====================================
+@HP
+--track0:破れの大きさ,0,1500,500
+--track1:ｵﾌｾｯﾄX,-1000,1000,0
+--track2:ｵﾌｾｯﾄY,-1000,1000,0
+--track3:ばらけ,0,100,50
+--dialog:名前,name="m1";固有名,uniName="b0";シード,seed=114514;
+--
+--=====================================
+do
+    require("lib_Parse");
+    require("lib_Editor");
+    require("lib_Util");
+    require("lib_Color");
+    require("lib_Debug");
+    require("lib_Sunshine");
+    local MAX_HP = 8;
+    local RANDOM_COUNT = 16;
+    local WCV = WALLSTUDIO_COMMUNICATION_VALUE;
+    local w, h = obj.getpixel();
+    if WCV[uniName] == nil then
+        WCV[uniName] = {};
+        WCV[uniName]["diffusion"] = obj.track3;
+        WCV[uniName]["random"] = Util.MakeRandomDoubleTable(RANDOM_COUNT, Util.Round(w*obj.track3/100), Util.Round(w*(1-obj.track3/100)), seed);
+    else
+        if WCV[uniName]["diffusion"] ~= obj.track3 then
+            WCV[uniName]["random"] = Util.MakeRandomDoubleTable(RANDOM_COUNT, Util.Round(w*obj.track3/100), Util.Round(w*(1-obj.track3/100)), seed);
+        end
+        if WCV[uniName]["buffer"] ~= WCV[name] then
+            --Util.Break(time);
+        end       
+    end
+    Debug.Log(#WCV[uniName]["random"]);
+    for i=1, MAX_HP - WCV[name] do
+        --星型マスク
+        obj.effect("マスク",
+            "X",WCV[uniName]["random"][1][i]+obj.track1,
+            "Y",WCV[uniName]["random"][2][i]+obj.track2,
+            "サイズ",obj.track0 * i/MAX_HP,
+            "マスクの反転",1,
+            "type",5
+        );
+    end
+    WCV[uniName]["buffer"] = WCV[name];
+    WCV[uniName]["diffusion"] = obj.track3;
+end

@@ -41,11 +41,19 @@ end
 function Pow(x)
     return math.pow(2, x)-1;
 end
-function Uniform(iterator)
-    if #iterator < 1 then return true end
-    local value = iterator[1];
-    for i=1,#iterator do
-        if iterator[i] ~= value then return false end
+function MakeRandomTable(count, start, stop)
+    --math.randomseed(os.time()*math.random());
+    local rtn = {};
+    for i=0,count do
+        table.insert(rtn, math.random(start, stop));
     end
-    return true
+    return rtn;
+end
+function MakeRandomDoubleTable(count, start, stop, seed)
+    local rtn = {};
+    math.randomseed(seed);
+    rtn[1] = MakeRandomTable(count, start, stop);
+    math.randomseed(seed%2525);
+    rtn[2] = MakeRandomTable(count, start, stop);
+    return rtn;
 end
