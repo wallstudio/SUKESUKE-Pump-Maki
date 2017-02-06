@@ -1,5 +1,5 @@
 module("Util",package.seeall);
-
+CARVE_FUNC = {};
 function Map(iterator, func)
     for i=1,#iterator do
         func(iterator[i], i, iterator);
@@ -25,3 +25,24 @@ function Reverse(iterator)
     end
     return rtn;
 end
+function Logistic(x)
+    local k = 1;
+    local b = 0.3;
+    local c = 0.5;
+    x = x*15 - 10;
+    local tmp = 1 + b*math.exp(-c*x);
+    return k/tmp;
+end
+function Linear(x)
+    return x;
+end
+function Log(x)
+    return math.log(x+1, 2);
+end
+function Pow(x)
+    return math.pow(2, x)-1;
+end
+CARVE_FUNC["logistic"] = Logistic;
+CARVE_FUNC["log"] = Log;
+CARVE_FUNC["pow"] = Pow;
+CARVE_FUNC["linear"] = Linear;
