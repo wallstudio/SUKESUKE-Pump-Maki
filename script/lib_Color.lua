@@ -1,5 +1,7 @@
 module("Color",package.seeall);
-
 PURPLE = 0xFF00FF;
 RED = 0xFF0000;
 WHITE = 0xFFFFFF;
+BLUE = 0x0000FF;
+SKYBLUE = 0x5555FF;
+BLACK = 0x000000;

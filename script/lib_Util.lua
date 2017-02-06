@@ -12,3 +12,16 @@ function AnchorShift(anchorPos, dstArray, shiftX, shiftY)
 	    dstArray[i][2] = anchorPos[i*2] + shiftY;
     end
 end
+function Round(x)
+    if math.abs(math.floor(x) - x) > math.abs(math.ceil(x) - x) then
+        return math.ceil(x);
+    end
+    return math.floor(x);
+end
+function Reverse(iterator)
+    local rtn = {};
+    for i=0,#iterator-1 do
+        table.insert(rtn, iterator[#iterator - i]);
+    end
+    return rtn;
+end

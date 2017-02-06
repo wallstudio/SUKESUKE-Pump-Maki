@@ -7,11 +7,13 @@
 --check0:位置確認,1
 --
 --=====================================
+DEBUG = true;
 EDIT = obj.check0;
 require("lib_Parse");
 require("lib_Editor");
 require("lib_Util");
 require("lib_Color");
+require("lib_Debug");
 --アンカーで座標指定
 local POINT_SIZE = 4;
 local w, h = obj.getpixel();
@@ -19,3 +21,7 @@ obj.setanchor("apos", 2, "line");
 Util.AnchorShift(apos, pos, w/2, h/2);
 Editor.Point(pos[1][1], pos[1][2], POINT_SIZE, Color.WHITE, 1);
 Editor.Point(pos[2][1], pos[2][2], POINT_SIZE, Color.RED, 1);
+--サンプリングするピクセル
+local start = pos[1];
+local stop = pos[2];
+local samplePx = Parse.BetweenPixcel(start, stop);
