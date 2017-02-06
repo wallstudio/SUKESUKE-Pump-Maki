@@ -31,13 +31,18 @@ local samplePx = Parse.BetweenPixcel(start, stop);
 --解析
 local rate = Parse.ParseColor(samplePx, Sunshine.TankParse);
 Debug.Log(Util.Round(rate * 100) .. "%");
-
+--通信変数
+if WALLSTUDIO_COMMUNICATION_VALUE == nil then
+    WALLSTUDIO_COMMUNICATION_VALUE = {};
+end
+WALLSTUDIO_COMMUNICATION_VALUE[name] = rate;
+--=====================================
 @円形
 --track0:頂点数,0,8,8
 --track1:ー,0,2,0
 --track2:ー,0,2,0
 --track3:ー,0,1,0
---dialog:名前,name="m0";座標,pos={};　,apos={};
+--dialog:名前,name="m1";座標,pos={};　,apos={};
 --check0:位置確認,1
 --
 --=====================================
@@ -66,3 +71,18 @@ local samplePx = pos;
 --解析
 local rate = Parse.ParseColor(samplePx, Sunshine.HpParse);
 Debug.Log(Util.Round(rate * ANCHOR_COUNT) .. "個");
+--通信変数
+if WALLSTUDIO_COMMUNICATION_VALUE == nil then
+    WALLSTUDIO_COMMUNICATION_VALUE = {};
+end
+WALLSTUDIO_COMMUNICATION_VALUE[name] = rate;
+--=====================================
+@タンク
+--track0:ー,0,1,0
+--track1:ー,0,1,0
+--track2:ー,0,1,0
+--track3:ー,0,1,0
+--dialog:名前,name="m0";座標,pos={};　,apos={};
+--check0:位置確認,1
+--
+--=====================================
