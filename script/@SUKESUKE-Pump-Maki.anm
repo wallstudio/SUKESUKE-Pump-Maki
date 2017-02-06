@@ -72,8 +72,8 @@ do
     --サンプリングするピクセル
     local samplePx = pos;
     --解析
-    local rate = Util.Round(Parse.ParseColor(samplePx, Sunshine.HpParse));
-    Debug.Log((rate * ANCHOR_COUNT) .. "個");
+    local rate = Util.Round(Parse.ParseColor(samplePx, Sunshine.HpParse)* ANCHOR_COUNT);
+    Debug.Log(rate .. "個");
     --通信変数
     if WALLSTUDIO_COMMUNICATION_VALUE == nil then
         WALLSTUDIO_COMMUNICATION_VALUE = {};
