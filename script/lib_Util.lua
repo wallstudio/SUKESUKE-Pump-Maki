@@ -41,3 +41,11 @@ end
 function Pow(x)
     return math.pow(2, x)-1;
 end
+function Uniform(iterator)
+    if #iterator < 1 then return true end
+    local value = iterator[1];
+    for i=1,#iterator do
+        if iterator[i] ~= value then return false end
+    end
+    return true
+end
