@@ -139,7 +139,7 @@ do
     else
         --手動用のアンカー
         obj.setanchor("apos", MAX_HP, "line");
-        Util.AnchorShift(apos, pos, w/2, h/2);
+        Util.AnchorShift(apos, pos, 0, 0); --シフト要らなかった？
         Util.BreakMask(MAX_HP - WCV[name], Util.MatrixTranspos(pos), obj.track1, obj.track2, obj.track0, MAX_HP);
     end
     obj.drawpoly(-obj.w/2,-obj.h/2,0, obj.w/2,-obj.h/2,0, obj.w/2,obj.h/2,0, -obj.w/2,obj.h/2,0);
