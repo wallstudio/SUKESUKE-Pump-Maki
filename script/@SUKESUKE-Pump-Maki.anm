@@ -147,4 +147,140 @@ do
     WCV[uniName]["buffer"] = WCV[name];
     WCV[uniName]["diffusion"] = obj.track3;
 end
-
+--=====================================
+@ZIKKEN
+--track0:大きさ,0,10,2 
+--track1:ｵﾌｾｯﾄX,-1000,1000,0
+--track2:ｵﾌｾｯﾄY,-1000,1000,0
+--track3:分割数,1,1024,256
+--dialog:名前,name="g0";バッファ数,bufferCount=32;バッファ数2,deltaBufferCount=32;幅,width=1024;誇張,scale=10;
+--
+--=====================================
+do
+    require("lib_Parse");
+    require("lib_Editor");
+    require("lib_Util");
+    require("lib_Color");
+    require("lib_Debug");
+    require("lib_Sunshine");
+    Debug.Log("ZIKKEN");
+    obj.pixeloption("blend",0);
+    DEBUG = true;
+    EDIT = true;
+    local REPEAT = width/obj.track3;
+    local f = Util.GetSpectrum(obj, obj.track3);
+    -- obj.track3個の周波数スペクトル spectrum
+    local spectrum = {};
+    for i=1,obj.track3 do
+        local x = i/obj.track3;
+        local y = Util.TableFunc(f, x);
+        for k=0,REPEAT-1 do
+            Debug.Point(k+REPEAT*i + obj.track1, -y + obj.track2, obj.track0, Color.GREEN, 0.5);
+        end
+        table.insert(spectrum, y);
+    end
+    -- 通信変数
+    if WALLSTUDIO_COMMUNICATION_VALUE == nil then
+        WALLSTUDIO_COMMUNICATION_VALUE = {};
+    end
+    if WALLSTUDIO_COMMUNICATION_VALUE[name] == nil or WALLSTUDIO_COMMUNICATION_VALUE[name]["divide"] ~= obj.track3 then
+        WALLSTUDIO_COMMUNICATION_VALUE[name] = {}
+        WALLSTUDIO_COMMUNICATION_VALUE[name]["average"] = spectrum;
+        WALLSTUDIO_COMMUNICATION_VALUE[name]["counter"] = 1;
+        WALLSTUDIO_COMMUNICATION_VALUE[name]["divide"] = obj.track3;
+    end
+    local WCV = WALLSTUDIO_COMMUNICATION_VALUE[name];
+    -- 平均の計算
+    for i=1,#(WCV["average"]) do
+        WCV["average"][i] = (WCV["average"][i]*WCV["counter"] + spectrum[i]) / (WCV["counter"]+1);
+    end
+    WCV["counter"] = WCV["counter"] + 1;
+    -- 平均の表示
+    for i=1,obj.track3 do
+        local x = i;
+        local y = WCV["average"][x];
+        for k=0,REPEAT-1 do
+            Debug.Point(k+REPEAT*i + obj.track1, -y + obj.track2, obj.track0, Color.BLUE, 1);
+        end
+    end
+    -- Nフレームバッファ
+    local N = bufferCount;
+    if WALLSTUDIO_COMMUNICATION_VALUE[name]["buffer"] == nil then
+        WALLSTUDIO_COMMUNICATION_VALUE[name]["buffer"] = {};
+        for i=1,N-1 do
+            table.insert(WCV["buffer"], spectrum);
+        end
+    end
+    table.insert(WCV["buffer"], spectrum);
+    if #(WCV["buffer"]) > N then
+        table.remove(WCV["buffer"], 1);
+    end
+    -- 平均の計算
+    local moment = {};
+    for i=1,#(WCV["buffer"][1]) do
+        moment[i] = 0;
+        for j=1,N do
+            moment[i] = moment[i] + WCV["buffer"][j][i];
+        end
+        moment[i] = moment[i]/N;
+    end
+    -- 平均の表示
+    for i=1,obj.track3 do
+        local x = i;
+        local y = moment[x];
+        for k=0,REPEAT-1 do
+            Debug.Point(k+REPEAT*i + obj.track1, -y + obj.track2, obj.track0, Color.RED, 1);
+        end
+    end
+    -- 微分用のバッファ
+    if WALLSTUDIO_COMMUNICATION_VALUE[name]["moment"] == nil then
+        WALLSTUDIO_COMMUNICATION_VALUE[name]["moment"] = moment;
+    end
+    -- 微分する
+    local deltaMoment = {};
+    for i=1,#moment do
+        deltaMoment[i] = moment[i] - WCV["moment"][i];
+    end
+    WCV["moment"] = moment;
+    -- 微分ベクトルの表示
+    for i=1,#deltaMoment do
+        local x = i;
+        local y = deltaMoment[x];
+        -- 誇張
+        y = y*scale;
+        for k=0,REPEAT-1 do
+            Debug.Point(k+REPEAT*i + obj.track1, -y + obj.track2, obj.track0, Color.WHITE, 0.5);
+        end
+    end
+    -- Mフレームバッファ
+    local M = deltaBufferCount;
+    if WALLSTUDIO_COMMUNICATION_VALUE[name]["deltaBuffer"] == nil then
+        WALLSTUDIO_COMMUNICATION_VALUE[name]["deltaBuffer"] = {};
+        for i=1,M-1 do
+            table.insert(WCV["deltaBuffer"], deltaMoment);
+        end
+    end
+    table.insert(WCV["deltaBuffer"], deltaMoment);
+    if #(WCV["deltaBuffer"]) > M then
+        table.remove(WCV["deltaBuffer"], 1);
+    end
+    -- 平均の計算
+    local momentMoment = {};
+    for i=1,#(WCV["deltaBuffer"][1]) do
+        momentMoment[i] = 0;
+        for j=1,M do
+            momentMoment[i] = momentMoment[i] + WCV["deltaBuffer"][j][i];
+        end
+        momentMoment[i] = momentMoment[i]/N;
+    end
+    -- 平均の表示
+    for i=1,#momentMoment do
+        local x = i;
+        local y = momentMoment[x];
+        -- 誇張
+        y = y*scale;
+        for k=0,REPEAT-1 do
+            Debug.Point(k+REPEAT*i + obj.track1, -y + obj.track2, obj.track0, Color.YELLOW, 1);
+        end
+    end
+end

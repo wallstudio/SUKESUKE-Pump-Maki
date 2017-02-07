@@ -245,3 +245,19 @@ function MatrixTranspos(matrix)
     end
     return newMatrix;
 end
+-- obj.getaudioのラッパー
+-- {Nun} function(obj)
+function GetSpectrum(obj)
+    local buf = {};
+    obj.getaudio(buf,"audiobuffer","spectrum",obj.track3);
+    return buf;
+end
+-- 離散配列の関数化，domein:[0,1]
+-- Nun function({Nun}, Nun)
+function TableFunc(values, input)
+    local count = #values;
+    input = Round(input*count);
+    if input < 1 then input = 1 end
+    if input > count - 1 then input = count end
+    return values[input];
+end
