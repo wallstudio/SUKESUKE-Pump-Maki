@@ -148,7 +148,7 @@ do
     WCV[uniName]["diffusion"] = obj.track3;
 end
 --=====================================
-@ZIKKEN
+@放水音解析
 --track0:ｵﾌｾｯﾄX,-1000,1000,100
 --track1:ｵﾌｾｯﾄY,-1000,1000,500
 --track2:拡大X,0,10,1
@@ -186,6 +186,7 @@ do
         WALLSTUDIO_COMMUNICATION_VALUE[name]["learn"] = Util.InitTableReplece(0, division);
         WALLSTUDIO_COMMUNICATION_VALUE[name]["learnCount"] = 0;
         WALLSTUDIO_COMMUNICATION_VALUE[name]["frame"] = 0;
+        WALLSTUDIO_COMMUNICATION_VALUE[name]["corelation"] = 0;
     end
     local WCV = WALLSTUDIO_COMMUNICATION_VALUE[name];
     -- 解析
@@ -217,4 +218,5 @@ do
     Debug.ShowDisplayValueTable(border, shiftX, shiftY, dotSize, scaleX, scaleY, color, 1);
     -- 次のフレームへ値を送信
     WCV["moment"] = moment;
+    WCV["corelation"] = corelation;
 end
