@@ -119,11 +119,6 @@ do
     local RANDOM_COUNT = 16;
     local WCV = WALLSTUDIO_COMMUNICATION_VALUE;
     local w, h = obj.getpixel();
-    --手動用のアンカー
-    if not obj.check0 then
-        obj.setanchor("apos", MAX_HP, "line");
-        Util.AnchorShift(apos, pos, w/2, h/2);
-    end
     --バッファー関係の初期化切り分け
     if WCV[uniName] == nil then
         WCV[uniName] = {};
@@ -142,6 +137,9 @@ do
     if obj.check0 then
         Util.BreakMask(MAX_HP - WCV[name], WCV[uniName]["random"], obj.track1, obj.track2, obj.track0, MAX_HP);
     else
+        --手動用のアンカー
+        obj.setanchor("apos", MAX_HP, "line");
+        Util.AnchorShift(apos, pos, w/2, h/2);
         Util.BreakMask(MAX_HP - WCV[name], Util.MatrixTranspos(pos), obj.track1, obj.track2, obj.track0, MAX_HP);
     end
     obj.drawpoly(-obj.w/2,-obj.h/2,0, obj.w/2,-obj.h/2,0, obj.w/2,obj.h/2,0, -obj.w/2,obj.h/2,0);

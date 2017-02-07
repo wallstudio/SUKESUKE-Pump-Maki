@@ -1,9 +1,13 @@
 module("Util",package.seeall);
+-- テーブルのマップ
+-- nil function({Any}, Func)
 function Map(iterator, func)
     for i=1,#iterator do
         func(iterator[i], i, iterator);
     end
 end
+-- アンカーの見た目との座標のずれを調整し多重配列に分解
+-- nil function({Nun}, {{Nun}}, Nun, Nun)
 function AnchorShift(anchorPos, dstArray, shiftX, shiftY)
     for i=1,math.floor(#anchorPos/2) do
         dstArray[i] = {};
@@ -11,12 +15,16 @@ function AnchorShift(anchorPos, dstArray, shiftX, shiftY)
 	    dstArray[i][2] = anchorPos[i*2] + shiftY;
     end
 end
+-- 四捨五入（何故かmathにない）
+-- Nun function(Nun)
 function Round(x)
     if math.abs(math.floor(x) - x) > math.abs(math.ceil(x) - x) then
         return math.ceil(x);
     end
     return math.floor(x);
 end
+-- テーブルのリバース
+-- {Any} function({Any})
 function Reverse(iterator)
     local rtn = {};
     for i=0,#iterator-1 do
@@ -24,6 +32,8 @@ function Reverse(iterator)
     end
     return rtn;
 end
+-- ロジスティック関数，domein:[0,1],range:[0,1]
+-- Nun function(Nun)
 function Logistic(x)
     local k = 1;
     local b = 0.3;
@@ -32,15 +42,23 @@ function Logistic(x)
     local tmp = 1 + b*math.exp(-c*x);
     return k/tmp;
 end
+-- 傾き1切片0の線形関数，domein:[0,1],range:[0,1]
+-- Nun function(Nun)
 function Linear(x)
     return x;
 end
+-- 底2のシフト済み対数関数，domein:[0,1],range:[0,1]
+-- Nun function(Nun)
 function Log(x)
     return math.log(x+1, 2);
 end
+-- 基数2のシフト済み指数関数，domein:[0,1],range:[0,1]
+-- Nun function(Nun)
 function Pow(x)
     return math.pow(2, x)-1;
 end
+-- count個のランダムな値のテーブルを作る
+-- {Nun} function(Nun, Nun, Nun)
 function MakeRandomTable(count, start, stop)
     --math.randomseed(os.time()*math.random());
     local rtn = {};
@@ -49,6 +67,8 @@ function MakeRandomTable(count, start, stop)
     end
     return rtn;
 end
+-- count個のランダムな値のテーブルを二つ作る
+-- {{Nun}} function(Nun, Nun, Nun, Nun)
 function MakeRandomDoubleTable(count, start, stop, seed)
     local rtn = {};
     math.randomseed(seed);
@@ -57,6 +77,8 @@ function MakeRandomDoubleTable(count, start, stop, seed)
     rtn[2] = MakeRandomTable(count, start, stop);
     return rtn;
 end
+-- 砕け散る
+-- nil function(Nun, obj)
 function BreakDown(time, obj)
 
     local size=50;
@@ -197,6 +219,8 @@ function BreakDown(time, obj)
         end
     end
 end
+-- pointSrcに従ってcount個のマスクをあてる，マスクはだんだん大きくなる
+-- nil function(Nun, {{Nun}}, Nun, Nun, Nun, Nun)
 function BreakMask(count, pointSrc, offsetX, offsetY, size, max)
     for i=1, count do
         obj.effect("マスク",
@@ -208,6 +232,8 @@ function BreakMask(count, pointSrc, offsetX, offsetY, size, max)
         );
     end
 end
+-- 行列（二次テーブル）の転置操作
+-- {{Any}} function({{Any}})
 function MatrixTranspos(matrix)
     local newMatrix = {};
     for i=1,#(matrix[1]) do

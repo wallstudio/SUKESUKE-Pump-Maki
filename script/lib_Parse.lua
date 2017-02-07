@@ -2,6 +2,8 @@ module("Parse",package.seeall);
 require("lib_Debug");
 require("lib_Util");
 require("lib_Color");
+-- startからstopまでのピクセルテーブルを返す
+-- {{Nun}} function({Nun}, {Nun})
 function BetweenPixcel(start, stop)
     local xCount = Util.Round(math.abs(start[1] - stop[1]));
     local yCount = Util.Round(math.abs(start[2] - stop[2]));
@@ -36,7 +38,6 @@ function BetweenPixcel(start, stop)
         end
         rtn = Util.Reverse(rtn);
     end
-    Debug.Log("#sample: " .. #rtn);
     for i=1,#rtn do
         if 50 > math.abs(rtn[i][longEdge] - start[longEdge]) then
             Debug.Point(rtn[i][1]-3, rtn[i][2], 1, Color.SKYBLUE, 1);
@@ -45,9 +46,10 @@ function BetweenPixcel(start, stop)
         end
     end
     Debug.Point(rtn[1][1], rtn[1][2], 24, Color.BLACK, 0.3);
-    Debug.Log("#sample: " .. #rtn);
     return rtn;
 end
+-- samplePxの各要素に対してruleFuncを基準として分けた時の比を計算する
+-- {{Nun}} function(Func)
 function ParseColor(samplePx, ruleFunc)
     local rateArry = {};
     for i=1,#samplePx do
@@ -64,6 +66,8 @@ function ParseColor(samplePx, ruleFunc)
     end
     return counter/#rateArry;
 end
+-- ParseColorの可視化
+-- nil function(Num, Num, Func)
 function DebugShow(x, y, ruleFunc)
     local OFFSET = 150;
     local RANGE = 40;
