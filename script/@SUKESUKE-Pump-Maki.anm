@@ -149,11 +149,12 @@ do
 end
 --=====================================
 @ZIKKEN
---track0:大きさ,0,10,2 
---track1:ｵﾌｾｯﾄX,-1000,1000,0
---track2:ｵﾌｾｯﾄY,-1000,1000,0
---track3:分割数,1,1024,256
---dialog:名前,name="g0";バッファ数,bufferCount=32;バッファ数2,deltaBufferCount=32;幅,width=1024;誇張,scale=10;
+--track0:ｵﾌｾｯﾄX,-1000,1000,100
+--track1:ｵﾌｾｯﾄY,-1000,1000,500
+--track2:拡大X,0,10,1
+--track3:拡大Y,0,10,1.4
+--dialog:名前,name="g0";バッファ数,bufferCount=32;バッファ数2,deltaBufferCount=32;分割数,division=512;点サイズ,dotSize=4;閾値,borderValue=30;
+--check0:学習,0
 --
 --=====================================
 do
@@ -165,31 +166,55 @@ do
     require("lib_Sunshine");
     DEBUG = true;
     EDIT = true;
+    LARNING = obj.check0;
     obj.pixeloption("blend",0);
+    local shiftX = obj.track0;
+    local shiftY = obj.track1;
+    local scaleX = obj.track2;
+    local scaleY = obj.track3;
     
     -- 通信変数とバッファー
     if WALLSTUDIO_COMMUNICATION_VALUE == nil then
         WALLSTUDIO_COMMUNICATION_VALUE = {};
     end
-    if WALLSTUDIO_COMMUNICATION_VALUE[name] == nil or WALLSTUDIO_COMMUNICATION_VALUE[name]["divide"] ~= obj.track3 then
+    if WALLSTUDIO_COMMUNICATION_VALUE[name] == nil or WALLSTUDIO_COMMUNICATION_VALUE[name]["divide"] ~= division then
         WALLSTUDIO_COMMUNICATION_VALUE[name] = {};
-        WALLSTUDIO_COMMUNICATION_VALUE[name]["divide"] = obj.track3;
-        WALLSTUDIO_COMMUNICATION_VALUE[name]["buffer"] = Util.InitTableReplece(Util.InitTableReplece(0, obj.track3),bufferCount);
-        WALLSTUDIO_COMMUNICATION_VALUE[name]["moment"] = Util.InitTableReplece(0, obj.track3);
-        WALLSTUDIO_COMMUNICATION_VALUE[name]["deltaBuffer"] = Util.InitTableReplece(Util.InitTableReplece(0, obj.track3), deltaBufferCount);
+        WALLSTUDIO_COMMUNICATION_VALUE[name]["divide"] = division;
+        WALLSTUDIO_COMMUNICATION_VALUE[name]["buffer"] = Util.InitTableReplece(Util.InitTableReplece(0, division),bufferCount);
+        WALLSTUDIO_COMMUNICATION_VALUE[name]["moment"] = Util.InitTableReplece(0, division);
+        WALLSTUDIO_COMMUNICATION_VALUE[name]["deltaBuffer"] = Util.InitTableReplece(Util.InitTableReplece(0, division), deltaBufferCount);
+        WALLSTUDIO_COMMUNICATION_VALUE[name]["learn"] = Util.InitTableReplece(0, division);
+        WALLSTUDIO_COMMUNICATION_VALUE[name]["learnCount"] = 0;
+        WALLSTUDIO_COMMUNICATION_VALUE[name]["frame"] = 0;
     end
     local WCV = WALLSTUDIO_COMMUNICATION_VALUE[name];
     -- 解析
-    local spectrum = Util.GetSpectrum(obj, obj.track3);
-    local moment = Util.TableAverage(WCV["buffer"]);
+    local spectrum = Util.GetSpectrum(obj, division);
+    Util.TubeTableAdd(WCV["buffer"], spectrum, bufferCount);
+    local moment = Util.TableAverage(WCV["buffer"], bufferCount);
     local deltaMoment = Util.DiffTable(moment, WCV["moment"]);
-    local momentMoment = Util.TableAverage(WCV["deltaBuffer"]);
+    Util.TubeTableAdd(WCV["deltaBuffer"], deltaMoment, deltaBufferCount);
+    local momentMoment = Util.TableAverage(WCV["deltaBuffer"], deltaBufferCount);
+    local border = Util.ScaleTable(Sunshine.ShotSoundBorderFunc(1,512,512), 0.3);
+    local corelation = Util.CrossCorelation(border,moment,0);
+    local color = Color.GRAY;
+    if(corelation > borderValue*100000) then color = Color.SKYBLUE end
+    -- 学習
+    if LARNING then
+        WCV["learn"] = Util.ScaleTable(WCV["learn"], WCV["learnCount"]);
+        WCV["learnCount"] = WCV["learnCount"] + 1;
+        WCV["learn"] = Util.ScaleTable(Util.AddTable(WCV["learn"], moment), 1/WCV["learnCount"]);
+        WCV["frame"] = WCV["frame"] + 1;
+        if WCV["frame"]%60 < 1 then
+            Util.FileDump("plugins/script/Statistics.txt", table.concat(WCV["learn"], ","), "a");
+        end
+    end
     -- グラフに表示
-    Debug.ShowDisplayValueTable(moment, obj.track1, obj.track2, obj.track0, scaleX, scaleY, Color.RED, 1);
-    Debug.ShowDisplayValueTable(deltaMoment, obj.track1, obj.track2, obj.track0, scaleX, scaleY, Color.WHITE, 1);
-    Debug.ShowDisplayValueTable(momentMoment, obj.track1, obj.track2, obj.track0, scaleX, scaleY, Color.YELLOW, 1);
+    Debug.ShowDisplayValueTable(WCV["learn"], shiftX, shiftY, dotSize, scaleX, scaleY, Color.PURPLE, 1);
+    Debug.ShowDisplayValueTable(moment, shiftX, shiftY, dotSize, scaleX, scaleY, Color.RED, 1);
+    Debug.ShowDisplayValueTable(deltaMoment, shiftX, shiftY, dotSize, scaleX, scaleY, Color.WHITE, 1);
+    Debug.ShowDisplayValueTable(momentMoment, shiftX, shiftY, dotSize, scaleX, scaleY, Color.YELLOW, 1);
+    Debug.ShowDisplayValueTable(border, shiftX, shiftY, dotSize, scaleX, scaleY, color, 1);
     -- 次のフレームへ値を送信
     WCV["moment"] = moment;
-    Util.TubeTableAdd(WCV["buffer"], spectrum, bufferCount);
-    Util.TubeTableAdd(WCV["deltaBuffer"], deltaMoment,deltaBufferCount);
 end

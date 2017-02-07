@@ -249,7 +249,7 @@ end
 -- {Nun} function(obj, Num)
 function GetSpectrum(obj, sampleCount)
     local buf = {};
-    obj.getaudio(buf,"audiobuffer","spectrum",obj.track3);
+    obj.getaudio(buf,"audiobuffer","spectrum",division);
     return buf;
 end
 -- 離散配列の関数化，domein:[0,1]
@@ -263,14 +263,14 @@ function TableFunc(values, input)
 end
 -- テーブル同士の平均計算
 -- {Num} function({{Num}})
-function TableAverage(valueTable)
+function TableAverage(valueTable, length)    
     local average = {};
-    for i=1,#(valueTable[1]) do
+    for i=1,#(valueTable[1]) do -- division
         average[i] = 0;
-        for j=1,bufferCount do
+        for j=1,#valueTable do -- bufferCount
             average[i] = average[i] + valueTable[j][i];
         end
-        average[i] = average[i]/#(valueTable[1]);
+        average[i] = average[i]/length;
     end
     return average;
 end
@@ -297,4 +297,40 @@ function DiffTable(table0, table1)
         rtn[i] = table0[i] - table1[i];
     end
     return rtn;
+end
+-- 相関関数
+-- {Num} function({Num}, {Num}, Num)
+function CrossCorelation(f, g ,t)
+    local sum = 0;
+    for i=1,#f do
+        if 1 <= i-t and i-t <= #g then
+            sum = sum + f[i]*g[i+t];
+        end
+    end
+    return sum;
+end
+-- テーブルの和
+-- {Num} function({Num}, {Num})
+function AddTable(table0, table1)
+    local rtn = {};
+    for i=1,#table0 do
+        rtn[i] = table0[i] + table1[i]; 
+    end
+    return rtn;
+end
+-- テーブルのスカラー倍
+-- {Num} function({Num}, Num)
+function ScaleTable(table0, scale)
+    local rtn = {};
+    for i=1,#table0 do
+        rtn[i] = table0[i] * scale; 
+    end
+    return rtn;
+end
+-- ファイルに一行書き込み
+-- nil function(string, string, string)
+function FileDump(path, data, mode)
+    local fhs, estr, ecode = io.open(path, mode);
+    fhs:write(data .. "\n");
+    fhs:close();
 end
