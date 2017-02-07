@@ -163,97 +163,33 @@ do
     require("lib_Color");
     require("lib_Debug");
     require("lib_Sunshine");
-    Debug.Log("ZIKKEN");
-    obj.pixeloption("blend",0);
     DEBUG = true;
     EDIT = true;
-    local REPEAT = width/obj.track3;
-    -- obj.track3個の周波数スペクトル spectrum
-    local spectrum = Util.GetSpectrum(obj, obj.track3);
-    -- 通信変数
+    obj.pixeloption("blend",0);
+    
+    -- 通信変数とバッファー
     if WALLSTUDIO_COMMUNICATION_VALUE == nil then
         WALLSTUDIO_COMMUNICATION_VALUE = {};
     end
     if WALLSTUDIO_COMMUNICATION_VALUE[name] == nil or WALLSTUDIO_COMMUNICATION_VALUE[name]["divide"] ~= obj.track3 then
-        WALLSTUDIO_COMMUNICATION_VALUE[name] = {}
+        WALLSTUDIO_COMMUNICATION_VALUE[name] = {};
         WALLSTUDIO_COMMUNICATION_VALUE[name]["divide"] = obj.track3;
-        -- 元値の平均化
-        WALLSTUDIO_COMMUNICATION_VALUE[name]["buffer"] = {};
-        for i=1,bufferCount-1 do
-            table.insert(WALLSTUDIO_COMMUNICATION_VALUE[name]["buffer"], spectrum);
-        end
+        WALLSTUDIO_COMMUNICATION_VALUE[name]["buffer"] = Util.InitTableReplece(Util.InitTableReplece(0, obj.track3),bufferCount);
+        WALLSTUDIO_COMMUNICATION_VALUE[name]["moment"] = Util.InitTableReplece(0, obj.track3);
+        WALLSTUDIO_COMMUNICATION_VALUE[name]["deltaBuffer"] = Util.InitTableReplece(Util.InitTableReplece(0, obj.track3), deltaBufferCount);
     end
     local WCV = WALLSTUDIO_COMMUNICATION_VALUE[name];
-    table.insert(WCV["buffer"], spectrum);
-    if #(WCV["buffer"]) > bufferCount then
-        table.remove(WCV["buffer"], 1);
-    end
-    -- 平均の計算
-    local moment = {};
-    for i=1,#(WCV["buffer"][1]) do
-        moment[i] = 0;
-        for j=1,bufferCount do
-            moment[i] = moment[i] + WCV["buffer"][j][i];
-        end
-        moment[i] = moment[i]/bufferCount;
-    end
-    -- 平均の表示
-    for i=1,obj.track3 do
-        local x = i;
-        local y = moment[x];
-        for k=0,REPEAT-1 do
-            Debug.Point(k+REPEAT*i + obj.track1, -y + obj.track2, obj.track0, Color.RED, 1);
-        end
-    end
-    -- 微分用のバッファ
-    if WALLSTUDIO_COMMUNICATION_VALUE[name]["moment"] == nil then
-        WALLSTUDIO_COMMUNICATION_VALUE[name]["moment"] = moment;
-    end
-    -- 微分する
-    local deltaMoment = {};
-    for i=1,#moment do
-        deltaMoment[i] = moment[i] - WCV["moment"][i];
-    end
+    -- 解析
+    local spectrum = Util.GetSpectrum(obj, obj.track3);
+    local moment = Util.TableAverage(WCV["buffer"]);
+    local deltaMoment = Util.DiffTable(moment, WCV["moment"]);
+    local momentMoment = Util.TableAverage(WCV["deltaBuffer"]);
+    -- グラフに表示
+    Debug.ShowDisplayValueTable(moment, obj.track1, obj.track2, obj.track0, scaleX, scaleY, Color.RED, 1);
+    Debug.ShowDisplayValueTable(deltaMoment, obj.track1, obj.track2, obj.track0, scaleX, scaleY, Color.WHITE, 1);
+    Debug.ShowDisplayValueTable(momentMoment, obj.track1, obj.track2, obj.track0, scaleX, scaleY, Color.YELLOW, 1);
+    -- 次のフレームへ値を送信
     WCV["moment"] = moment;
-    -- 微分ベクトルの表示
-    for i=1,#deltaMoment do
-        local x = i;
-        local y = deltaMoment[x];
-        -- 誇張
-        y = y*scale;
-        for k=0,REPEAT-1 do
-            Debug.Point(k+REPEAT*i + obj.track1, -y + obj.track2, obj.track0, Color.WHITE, 0.5);
-        end
-    end
-    -- Mフレームバッファ
-    local M = deltaBufferCount;
-    if WALLSTUDIO_COMMUNICATION_VALUE[name]["deltaBuffer"] == nil then
-        WALLSTUDIO_COMMUNICATION_VALUE[name]["deltaBuffer"] = {};
-        for i=1,M-1 do
-            table.insert(WCV["deltaBuffer"], deltaMoment);
-        end
-    end
-    table.insert(WCV["deltaBuffer"], deltaMoment);
-    if #(WCV["deltaBuffer"]) > M then
-        table.remove(WCV["deltaBuffer"], 1);
-    end
-    -- 平均の計算
-    local momentMoment = {};
-    for i=1,#(WCV["deltaBuffer"][1]) do
-        momentMoment[i] = 0;
-        for j=1,M do
-            momentMoment[i] = momentMoment[i] + WCV["deltaBuffer"][j][i];
-        end
-        momentMoment[i] = momentMoment[i]/N;
-    end
-    -- 平均の表示
-    for i=1,#momentMoment do
-        local x = i;
-        local y = momentMoment[x];
-        -- 誇張
-        y = y*scale;
-        for k=0,REPEAT-1 do
-            Debug.Point(k+REPEAT*i + obj.track1, -y + obj.track2, obj.track0, Color.YELLOW, 1);
-        end
-    end
+    Util.TubeTableAdd(WCV["buffer"], spectrum, bufferCount);
+    Util.TubeTableAdd(WCV["deltaBuffer"], deltaMoment,deltaBufferCount);
 end

@@ -246,8 +246,8 @@ function MatrixTranspos(matrix)
     return newMatrix;
 end
 -- obj.getaudioのラッパー
--- {Nun} function(obj)
-function GetSpectrum(obj)
+-- {Nun} function(obj, Num)
+function GetSpectrum(obj, sampleCount)
     local buf = {};
     obj.getaudio(buf,"audiobuffer","spectrum",obj.track3);
     return buf;
@@ -260,4 +260,41 @@ function TableFunc(values, input)
     if input < 1 then input = 1 end
     if input > count - 1 then input = count end
     return values[input];
+end
+-- テーブル同士の平均計算
+-- {Num} function({{Num}})
+function TableAverage(valueTable)
+    local average = {};
+    for i=1,#(valueTable[1]) do
+        average[i] = 0;
+        for j=1,bufferCount do
+            average[i] = average[i] + valueTable[j][i];
+        end
+        average[i] = average[i]/#(valueTable[1]);
+    end
+    return average;
+end
+-- テーブルをチューブとみなして要素の追加
+-- nil function({Any}, Any, Num)
+function TubeTableAdd(buffer, addElement, length)
+    if #buffer >= length then table.remove(buffer, 1) end
+    table.insert(buffer, addElement);
+end
+-- テーブルをあるエレメントで全て初期化
+-- {Any} function(Any, Num)
+function InitTableReplece(initElement, count)
+    local rtn = {};
+    for i=1,count do
+        rtn[i] = initElement;
+    end
+    return rtn;
+end
+-- テーブルの差分 table0 - table1
+-- {Num} function({Num}, {Num})
+function DiffTable(table0, table1)
+    local rtn = {};
+    for i=1,#table0 do
+        rtn[i] = table0[i] - table1[i];
+    end
+    return rtn;
 end

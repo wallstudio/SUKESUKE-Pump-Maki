@@ -17,3 +17,11 @@ function Point(x, y, size, coler, alpha)
         if not EDIT then return end
 		Editor.Point(x, y, size, coler, alpha);
 end
+
+function ShowDisplayValueTable(valueTable, shiftX, shiftY, dotSize, scaleX, scaleY, color, alpha)
+    for i=1,#valueTable do
+        local x = i;
+        local y = valueTable[x];
+        Debug.Point(x + shiftX, - y + shiftY, dotSize, color, alpha);
+    end
+end
