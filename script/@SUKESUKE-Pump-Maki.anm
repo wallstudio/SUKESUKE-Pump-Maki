@@ -1,14 +1,14 @@
-@線形
+@線形ｹﾞｰｼﾞ解析
 --track0:ー,0,2,0
 --track1:ー,0,2,0
 --track2:ー,0,2,0
 --track3:ー,0,1,0
 --dialog:名前,name="m0";座標,pos={};　,apos={};
---check0:位置確認,1
+--check0:位置確認,0
 --
 --=====================================
 do
-    DEBUG = true;
+    DEBUG = false;
     EDIT = obj.check0;
     require("lib_Parse");
     require("lib_Editor");
@@ -39,17 +39,17 @@ do
     WALLSTUDIO_COMMUNICATION_VALUE[name] = rate;
 end
 --=====================================
-@円形
+@円形ｹﾞｰｼﾞ解析
 --track0:頂点数,0,8,8
 --track1:ー,0,2,0
 --track2:ー,0,2,0
 --track3:ー,0,1,0
 --dialog:名前,name="m1";座標,pos={};　,apos={};
---check0:位置確認,1
+--check0:位置確認,0
 --
 --=====================================
 do
-    DEBUG = true;
+    DEBUG = false;
     EDIT = obj.check0;
     require("lib_Parse");
     require("lib_Editor");
@@ -81,6 +81,53 @@ do
     WALLSTUDIO_COMMUNICATION_VALUE[name] = rate;
 end
 --=====================================
+@放水音解析
+--track0:ｵﾌｾｯﾄX,-1000,1000,100
+--track1:ｵﾌｾｯﾄY,-1000,1000,500
+--track2:拡大X,0,10,1
+--track3:拡大Y,0,10,1.4
+--dialog:名前,name="g1";バッファ数,bufferCount=32;分割数,division=512;点サイズ,dotSize=4;
+--
+--=====================================
+do
+    require("lib_Parse");
+    require("lib_Editor");
+    require("lib_Util");
+    require("lib_Color");
+    require("lib_Debug");
+    require("lib_Sunshine");
+    DEBUG = false;
+    EDIT = false;
+    LARNING = false;
+    obj.pixeloption("blend",0);
+    local shiftX = obj.track0;
+    local shiftY = obj.track1;
+    local scaleX = obj.track2;
+    local scaleY = obj.track3;
+    
+    -- 通信変数とバッファー
+    if WALLSTUDIO_COMMUNICATION_VALUE == nil then
+        WALLSTUDIO_COMMUNICATION_VALUE = {};
+    end
+    if WALLSTUDIO_COMMUNICATION_VALUE[name] == nil or WALLSTUDIO_COMMUNICATION_VALUE[name]["divide"] ~= division then
+        WALLSTUDIO_COMMUNICATION_VALUE[name] = {};
+        WALLSTUDIO_COMMUNICATION_VALUE[name]["divide"] = division;
+        WALLSTUDIO_COMMUNICATION_VALUE[name]["buffer"] = Util.InitTableReplece(Util.InitTableReplece(0, division),bufferCount);
+        WALLSTUDIO_COMMUNICATION_VALUE[name]["moment"] = Util.InitTableReplece(0, division);
+        WALLSTUDIO_COMMUNICATION_VALUE[name]["corelation"] = 0;
+    end
+    local WCV = WALLSTUDIO_COMMUNICATION_VALUE[name];
+    -- 解析
+    local spectrum = Util.GetSpectrum(obj, division);
+    Util.TubeTableAdd(WCV["buffer"], spectrum, bufferCount);
+    local moment = Util.TableAverage(WCV["buffer"], bufferCount);
+    local border = Util.ScaleTable(Sunshine.ShotSoundBorderFunc(1,512,512), 0.3);
+    local corelation = Util.CrossCorelation(border,moment,0);
+    -- 次のフレームへ値を送信
+    WCV["moment"] = moment;
+    WCV["corelation"] = corelation;
+end
+--=====================================
 @タンク
 --track0:ー,0,1,0
 --track1:ー,0,1,0
@@ -109,6 +156,7 @@ end
 --
 --=====================================
 do
+    DEBUG = false;
     require("lib_Parse");
     require("lib_Editor");
     require("lib_Util");
@@ -125,35 +173,63 @@ do
         WCV[uniName]["diffusion"] = obj.track3;
         WCV[uniName]["random"] = Util.MakeRandomDoubleTable(RANDOM_COUNT, Util.Round(w*obj.track3/100), Util.Round(w*(1-obj.track3/100)), seed);
         WCV[uniName]["breakTime"] = -60;
+        WCV[uniName]["buffer"] = 0;
     else
+        --手動で拡散値が変更されたら算数票の再構築
         if WCV[uniName]["diffusion"] ~= obj.track3 then
             WCV[uniName]["random"] = Util.MakeRandomDoubleTable(RANDOM_COUNT, Util.Round(w*obj.track3/100), Util.Round(w*(1-obj.track3/100)), seed);
         end
+        --前のフレームより小さくなったら大破
         if WCV[uniName]["buffer"] > WCV[name] then
             Debug.Log("大破");
             WCV[uniName]["breakTime"] = obj.time;
         end       
     end
+    --ダメージの量だけマスク
     if obj.check0 then
+        --ランダムの場合
         Util.BreakMask(MAX_HP - WCV[name], WCV[uniName]["random"], obj.track1, obj.track2, obj.track0, MAX_HP);
     else
-        --手動用のアンカー
+        --手動の場合（アンカー）
         obj.setanchor("apos", MAX_HP, "line");
         Util.AnchorShift(apos, pos, 0, 0); --シフト要らなかった？
         Util.BreakMask(MAX_HP - WCV[name], Util.MatrixTranspos(pos), obj.track1, obj.track2, obj.track0, MAX_HP);
     end
+    --大破アニメーション
     obj.drawpoly(-obj.w/2,-obj.h/2,0, obj.w/2,-obj.h/2,0, obj.w/2,obj.h/2,0, -obj.w/2,obj.h/2,0);
     Util.BreakDown(WCV[uniName]["breakTime"], obj);
     WCV[uniName]["buffer"] = WCV[name];
     WCV[uniName]["diffusion"] = obj.track3;
 end
 --=====================================
-@放水音解析
+@放水
+--track0:ー,0,1,0
+--track1:ー,0,1,0
+--track2:ー,0,1,0
+--track3:閾値,0,200,25
+--dialog:名前,name="g1";対象,dst="alpha";
+--
+--=====================================
+do
+    require("lib_Parse");
+    require("lib_Editor");
+    require("lib_Util");
+    require("lib_Color");
+    require("lib_Debug");
+    require("lib_Sunshine");
+    if WALLSTUDIO_COMMUNICATION_VALUE[name]["corelation"] > obj.track3*100000 then
+        obj[dst] = 1;
+    else
+        obj[dst] = 0;
+    end
+end
+--=====================================
+@放水音解析(実験用)
 --track0:ｵﾌｾｯﾄX,-1000,1000,100
 --track1:ｵﾌｾｯﾄY,-1000,1000,500
 --track2:拡大X,0,10,1
 --track3:拡大Y,0,10,1.4
---dialog:名前,name="g0";バッファ数,bufferCount=32;バッファ数2,deltaBufferCount=32;分割数,division=512;点サイズ,dotSize=4;閾値,borderValue=25;
+--dialog:名前,name="g0";バッファ数,bufferCount=32;バッファ数2,deltaBufferCount=32;分割数,division=512;点サイズ,dotSize=4;閾値,borderValue=15;
 --check0:学習,0
 --
 --=====================================
@@ -213,26 +289,4 @@ do
     -- 次のフレームへ値を送信
     WCV["moment"] = moment;
     WCV["corelation"] = corelation;
-end
---=====================================
-@放水
---track0:ー,0,1,0
---track1:ー,0,1,0
---track2:ー,0,1,0
---track3:閾値,0,200,25
---dialog:名前,name="g0";対象,dst="alpha";曲線,carve="Logistic";
---
---=====================================
-do
-    require("lib_Parse");
-    require("lib_Editor");
-    require("lib_Util");
-    require("lib_Color");
-    require("lib_Debug");
-    require("lib_Sunshine");
-    if WALLSTUDIO_COMMUNICATION_VALUE[name]["corelation"] > obj.track3*100000 then
-        obj[dst] = 1;
-    else
-        obj[dst] = 0;
-    end
 end
