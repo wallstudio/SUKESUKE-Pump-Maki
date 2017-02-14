@@ -202,13 +202,7 @@ do
     if(corelation > borderValue*100000) then color = Color.SKYBLUE end
     -- 学習
     if LARNING then
-        WCV["learn"] = Util.ScaleTable(WCV["learn"], WCV["learnCount"]);
-        WCV["learnCount"] = WCV["learnCount"] + 1;
-        WCV["learn"] = Util.ScaleTable(Util.AddTable(WCV["learn"], moment), 1/WCV["learnCount"]);
-        WCV["frame"] = WCV["frame"] + 1;
-        if WCV["frame"]%60 < 1 then
-            Util.FileDump("plugins/script/Statistics.txt", table.concat(WCV["learn"], ","), "a");
-        end
+        Util.LogAverage(moment, WCV["learn"], WCV["learnCount"], WCV["frame"], "plugins/script/Statistics.txt");
     end
     -- グラフに表示
     Debug.ShowDisplayValueTable(WCV["learn"], shiftX, shiftY, dotSize, scaleX, scaleY, Color.PURPLE, 1);

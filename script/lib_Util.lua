@@ -334,3 +334,15 @@ function FileDump(path, data, mode)
     fhs:write(data .. "\n");
     fhs:close();
 end
+-- 平均学習のサブルーチン化
+-- nil function({Num}, {Num}, Num, Num, string)
+function LogAverage(pram, buf, count, frameBuf, path)
+    local INTERVAL = 60;
+    buf = ScaleTable(buf, count);
+    count = count + 1;
+    buf = ScaleTable(AddTable(buf, pram), 1/count);
+    frameBuf = frameBuf + 1;
+    if frameBuf % INTERVAL < 1 then
+        FileDump(path, table.concat(buf, ","), "a");
+    end
+end
