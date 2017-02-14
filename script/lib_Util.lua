@@ -220,13 +220,13 @@ function BreakDown(time, obj)
     end
 end
 -- pointSrcに従ってcount個のマスクをあてる，マスクはだんだん大きくなる
--- nil function(Nun, {{Nun}}, Nun, Nun, Nun, Nun)
-function BreakMask(count, pointSrc, offsetX, offsetY, size, max)
+-- nil function(Nun, {{Nun}}, Nun, Nun, Nun, Nun, Func)
+function BreakMask(count, pointSrc, offsetX, offsetY, size, max, curve)
     for i=1, count do
         obj.effect("マスク",
             "X",pointSrc[1][i]+offsetX,
             "Y",pointSrc[2][i]+offsetY,
-            "サイズ",size * i/max,
+            "サイズ",size * curve(i/max),
             "マスクの反転",1,
             "type",5
         );

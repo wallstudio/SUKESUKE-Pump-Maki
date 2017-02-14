@@ -3,7 +3,7 @@
 --track1:ー,0,2,0
 --track2:ー,0,2,0
 --track3:ー,0,1,0
---dialog:名前,name="m0";座標,pos={};　,apos={};
+--dialog:名前,name="m0";　,apos={281,155,279,200};　,pos={};
 --check0:位置確認,0
 --
 --=====================================
@@ -44,7 +44,7 @@ end
 --track1:ー,0,2,0
 --track2:ー,0,2,0
 --track3:ー,0,1,0
---dialog:名前,name="m1";座標,pos={};　,apos={};
+--dialog:名前,name="m1";　,apos={325,-204,329,-177,330,-148,304,-128,275,-127,252,-146,241,-173,250,-196};　,pos={};
 --check0:位置確認,0
 --
 --=====================================
@@ -86,7 +86,7 @@ end
 --track1:ｵﾌｾｯﾄY,-1000,1000,500
 --track2:拡大X,0,10,1
 --track3:拡大Y,0,10,1.4
---dialog:名前,name="g1";バッファ数,bufferCount=32;分割数,division=512;点サイズ,dotSize=4;
+--dialog:名前,name="g1";バッファ数,bufferCount=32;分割数,division=512;
 --
 --=====================================
 do
@@ -147,11 +147,11 @@ do
 end
 --=====================================
 @HP
---track0:破れの大きさ,0,1500,500
---track1:ｵﾌｾｯﾄX,-1000,1000,0
---track2:ｵﾌｾｯﾄY,-1000,1000,0
---track3:ばらけ,0,100,50
---dialog:名前,name="m1";固有名,uniName="b0";シード,seed=114514;座標,pos={};　,apos={};
+--track0:破れの大きさ,0,1500,116.5
+--track1:ｵﾌｾｯﾄX(ﾗﾝﾀﾞﾑ),-1000,1000,0
+--track2:ｵﾌｾｯﾄY(ﾗﾝﾀﾞﾑ),-1000,1000,0
+--track3:ばらけ(ﾗﾝﾀﾞﾑ),0,100,50
+--dialog:名前,name="m1";固有名,uniName="b0";曲線,carve="Linear";シード,seed=114514;　,apos={-19.53,-9.19,-53.12,110.80,21.33,62.37,-40.54,16.50,15.28,146.16,22.72,37.90,-37.90,86.22,-4.28,12.84};　,pos={};
 --check0:ランダム,0
 --
 --=====================================
@@ -171,13 +171,13 @@ do
     if WCV[uniName] == nil then
         WCV[uniName] = {};
         WCV[uniName]["diffusion"] = obj.track3;
-        WCV[uniName]["random"] = Util.MakeRandomDoubleTable(RANDOM_COUNT, Util.Round(w*obj.track3/100), Util.Round(w*(1-obj.track3/100)), seed);
+        WCV[uniName]["random"] = Util.MakeRandomDoubleTable(RANDOM_COUNT, Util.Round(w*obj.track3/100), Util.Round(w*(1-obj.track3/100)), seed, carve);
         WCV[uniName]["breakTime"] = -60;
         WCV[uniName]["buffer"] = 0;
     else
         --手動で拡散値が変更されたら算数票の再構築
         if WCV[uniName]["diffusion"] ~= obj.track3 then
-            WCV[uniName]["random"] = Util.MakeRandomDoubleTable(RANDOM_COUNT, Util.Round(w*obj.track3/100), Util.Round(w*(1-obj.track3/100)), seed);
+            WCV[uniName]["random"] = Util.MakeRandomDoubleTable(RANDOM_COUNT, Util.Round(w*obj.track3/100), Util.Round(w*(1-obj.track3/100)), seed, carve);
         end
         --前のフレームより小さくなったら大破
         if WCV[uniName]["buffer"] > WCV[name] then
@@ -188,12 +188,12 @@ do
     --ダメージの量だけマスク
     if obj.check0 then
         --ランダムの場合
-        Util.BreakMask(MAX_HP - WCV[name], WCV[uniName]["random"], obj.track1, obj.track2, obj.track0, MAX_HP);
+        Util.BreakMask(MAX_HP - WCV[name], WCV[uniName]["random"], obj.track1, obj.track2, obj.track0, MAX_HP, Util[carve]);
     else
         --手動の場合（アンカー）
         obj.setanchor("apos", MAX_HP, "line");
         Util.AnchorShift(apos, pos, 0, 0); --シフト要らなかった？
-        Util.BreakMask(MAX_HP - WCV[name], Util.MatrixTranspos(pos), obj.track1, obj.track2, obj.track0, MAX_HP);
+        Util.BreakMask(MAX_HP - WCV[name], Util.MatrixTranspos(pos), 0, 0, obj.track0, MAX_HP, Util[carve]);
     end
     --大破アニメーション
     obj.drawpoly(-obj.w/2,-obj.h/2,0, obj.w/2,-obj.h/2,0, obj.w/2,obj.h/2,0, -obj.w/2,obj.h/2,0);
@@ -206,7 +206,7 @@ end
 --track0:ー,0,1,0
 --track1:ー,0,1,0
 --track2:ー,0,1,0
---track3:閾値,0,200,25
+--track3:閾値,0,200,15
 --dialog:名前,name="g1";対象,dst="alpha";
 --
 --=====================================
