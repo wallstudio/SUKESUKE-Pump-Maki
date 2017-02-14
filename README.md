@@ -1,6 +1,7 @@
 # SUKESUKE-Pump-Maki
 M様のところのMさんをスケスケに  
-[https://wallstudio.github.io/SUKESUKE-Pump-Maki/](https://wallstudio.github.io/SUKESUKE-Pump-Maki/) 
+## [解説動画（ニコニコ）](http://www.nicovideo.jp/watch/sm30639529) 
+[![サムネイル](https://wallstudio.github.io/SUKESUKE-Pump-Maki/video_thum.png)](http://www.nicovideo.jp/watch/sm30639529) 
 
 ## これは何？  
 ニコニコ動画で活動中のﾐｽﾘﾙ氏（[Twitter:@gudarinn120](https://twitter.com/gudarinn120)）の[「結月ゆかりがシャイン120枚頑張って集める実況」シリーズ](http://www.nicovideo.jp/mylist/56866478)の為に作ったAviUtlのアニメーション効果です．ゲーム画面のインジケーターの色情報と，音声を解析してオブジェクトのパラメーターを自動で操作してくれます．  
