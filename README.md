@@ -7,15 +7,14 @@ M様のところのMさんをスケスケに
 ニコニコ動画で活動中のﾐｽﾘﾙ氏（[Twitter:@gudarinn120](https://twitter.com/gudarinn120)）の[「結月ゆかりがシャイン120枚頑張って集める実況」シリーズ](http://www.nicovideo.jp/mylist/56866478)の為に作ったAviUtlのアニメーション効果です．ゲーム画面のインジケーターの色情報と，音声を解析してオブジェクトのパラメーターを自動で操作してくれます．  
 専用に開発しましたが，lib_Shineshine.luaを参考に，Weightとborderを調節してあげれば他にも使えると思います．
 
-## 環境依存
-* AviUtl最新版 version 0.99m
-* AviUtl拡張編集プラグイン version 0.90c2
+## 動作確認済み環境
+* aviutl_plus_20120619(AviUtlと拡張編集Plugin等のセット)
 
 ## インストール
 1. [最新版リリース](https://github.com/wallstudio/SUKESUKE-Pump-Maki/releases)をダウンロード
 2. Zipなので適当なアプリで展開（「script」フォルダや「README.md」が出てくるはず）
 3. AviUtlのインストールフォルダを開く（「AviUtl.exe」とか「読んでね」があるフォルダ）
-4. 「plugins」フォルダの中に展開した「script」フォルダをコピー
+4. 拡張編集プラグインがインストールされたフォルダの中に展開した「script」フォルダをコピー（セット版で導入した場合は「plugins」フォルダの中）
 
 ## 使い方
 1. 解析したい**ゲーム画面**にアニメーション効果**「線形ｹﾞｰｼﾞ解析@SUKESUKE-Pump-Maki」**を追加し，メインウィンドウに表示される丸が**タンクの上端と下端**に来るように調整（間に余計なものが入らないようにする）．
